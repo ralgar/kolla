@@ -18,6 +18,7 @@ stages:
 
 container:build:
   stage: build
+  image: quay.io/containers/buildah
   variables:
     TAG: zed-rocky-9
   script:
