@@ -12,13 +12,18 @@ This project builds minor fixes into the existing magnum-conductor container
 https://review.opendev.org/c/openstack/magnum/+/869391/4
 
 The switch to systemd-resolved in Fedora CoreOS caused a recursive loop with
- in-cluster CoreDNS. Patching the Kubelet args appropriately solves the
- problem.
+ in-cluster DNS resolution. Patching the Kubelet args appropriately solves
+ the problem.
 
 #### Up-to-date CSI containers not available
 
 The CSI driver repository in this component doesn't appear to be maintained
  any longer. Updating the script allows newer CSI versions to be used.
+
+#### csi-attacher unable to patch volumeattachments/status
+
+The attacher was missing the ClusterRole rule which allows it to update the
+ attachment status. Adding the rule solved the issue.
 
 ## Usage
 
