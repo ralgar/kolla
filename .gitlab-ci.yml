@@ -17,6 +17,7 @@ stages:
   - build
 
 container:build:
+  stage: build
   variables:
     TAG: zed-rocky-9
   script:
