@@ -13,20 +13,20 @@
 from oslo_log import log as logging
 
 from magnum.drivers.heat import driver
-from magnum.drivers.k8s_fedora_coreos_v1 import template_def
+from magnum.drivers.k8s_talos_v1 import template_def
 
 LOG = logging.getLogger(__name__)
 
 
-class Driver(driver.FedoraKubernetesDriver):
+class Driver(driver.TalosKubernetesDriver):
 
     @property
     def provides(self):
         return [
             {'server_type': 'vm',
-             'os': 'fedora-coreos',
+             'os': 'talos',
              'coe': 'kubernetes'},
         ]
 
     def get_template_definition(self):
-        return template_def.FCOSK8sTemplateDefinition()
+        return template_def.TalosK8sTemplateDefinition()

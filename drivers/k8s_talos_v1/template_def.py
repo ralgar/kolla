@@ -17,13 +17,13 @@ import six.moves.urllib.parse as urlparse
 
 from magnum.common import utils
 import magnum.conf
-from magnum.drivers.heat import k8s_fedora_template_def as kftd
+from magnum.drivers.heat import k8s_talos_template_def as kttd
 
 CONF = magnum.conf.CONF
 
 
-class FCOSK8sTemplateDefinition(kftd.K8sFedoraTemplateDefinition):
-    """Kubernetes template for a Fedora Atomic VM."""
+class TalosK8sTemplateDefinition(kttd.K8sTalosTemplateDefinition):
+    """Kubernetes template for a Talos VM."""
 
     @property
     def driver_module_path(self):
@@ -35,7 +35,7 @@ class FCOSK8sTemplateDefinition(kftd.K8sFedoraTemplateDefinition):
                             'templates/kubecluster.yaml')
 
     def get_params(self, context, cluster_template, cluster, **kwargs):
-        extra_params = super(FCOSK8sTemplateDefinition,
+        extra_params = super(TalosK8sTemplateDefinition,
                              self).get_params(context,
                                               cluster_template,
                                               cluster,
