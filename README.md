@@ -1,11 +1,25 @@
-# kolla-magnum-fixes
+# OpenStack Kolla Containers
 
 ## Overview
 
-This project builds minor fixes into the existing magnum-conductor container
- for [Kolla](https://docs.openstack.org/kolla/latest) release Zed.
+This project is simply a CI pipeline and container repository that integrates
+ with the [Kolla](https://docs.openstack.org/kolla/latest) build system,
+ allowing me to easily develop and run custom Kolla containers.
 
-### Fixes
+Currently building for OpenStack release Zed.
+
+## Usage
+
+Simply modify the relevant kolla-ansible role, and have it point to the
+ appropriate container in this repository instead.
+
+## OpenStack Components
+
+<details>
+
+<summary>Magnum</summary>
+
+### Bug Fixes
 
 #### Fedora CoreOS 36+ CoreDNS crash
 
@@ -17,7 +31,7 @@ The switch to systemd-resolved in Fedora CoreOS caused a recursive loop with
 
 #### Up-to-date CSI containers not available
 
-The CSI driver repository in this component doesn't appear to be maintained
+The CSI driver registry in this component doesn't appear to be maintained
  any longer. Updating the script allows newer CSI versions to be used.
 
 #### csi-attacher unable to patch volumeattachments/status
@@ -31,14 +45,11 @@ The attacher was missing the ClusterRole rule which allows it to update the
 
 Currently testing a cluster orchestration driver for Talos Linux.
 
-## Usage
-
-Simply modify the kolla-ansible magnum role, and have it point to the
- container in this repository instead.
+</details>
 
 ## License
 
 Copyright: (c) 2023, Ryan Algar
- ([ralgar/kolla-magnum-fixes](https://gitlab.com/ralgar/kolla-magnum-fixes))
+ ([ralgar/kolla](https://github.com/ralgar/kolla))
 
 MIT License (see LICENSE or [MIT License](https://mit-license.org/))

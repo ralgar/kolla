@@ -1,0 +1,41 @@
+---
+name: Build and publish Kolla images
+
+on:
+  push:
+
+env:
+  REGISTRY: ghcr.io
+  TAG: zed-rocky-9
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure pip is installed
+        run: sudo apt install -y python3-pip
+
+      - name: Install Kolla
+        run: pip install --no-input 'kolla==15.1.0'
+
+      - name: Build Kolla container(s)
+        run: kolla-build --config-file kolla-build.conf
+
+      - name: Tag the magnum-conductor image
+        run: >
+          docker tag
+          kolla/magnum-conductor:${{ env.TAG }}
+          ghcr.io/${{ github.repository }}/magnum-conductor:${{ env.TAG }}
+
+      - name: Push magnum-conductor image
+        run: docker push ghcr.io/${{ github.repository }}/magnum-conductor:${{ env.TAG }}
