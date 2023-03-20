@@ -25,6 +25,12 @@ The CSI driver repository in this component doesn't appear to be maintained
 The attacher was missing the ClusterRole rule which allows it to update the
  attachment status. Adding the rule solved the issue.
 
+### Features
+
+#### Talos Linux driver
+
+Currently testing a cluster orchestration driver for Talos Linux.
+
 ## Usage
 
 Simply modify the kolla-ansible magnum role, and have it point to the
