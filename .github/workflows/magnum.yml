@@ -1,12 +1,18 @@
 ---
-name: Build and publish Kolla images
+name: Build Magnum
 
 on:
-  push:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Remote branch'
+        required: true
+        default: 'stable/zed'
 
 env:
+  COMPONENT: magnum
   REGISTRY: ghcr.io
-  TAG: zed-rocky-9
+  BRANCH: "${{ github.event.inputs.branch }}"
 
 jobs:
   build-and-push-image:
@@ -15,7 +21,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
+      - name: Set 'TAG' environment variable
+        run: echo "TAG=$(echo ${{ env.BRANCH }} | sed 's|/|-|')" >> $GITHUB_ENV
+
+      - name: Log in to the container registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
@@ -28,8 +37,18 @@ jobs:
       - name: Install Kolla
         run: pip install --no-input 'kolla==15.1.0'
 
-      - name: Build Kolla container(s)
-        run: kolla-build --config-file kolla-build.conf
+      - name: Set remote Git ref in config file
+        run: >
+          sed -i 's|<${{ env.COMPONENT }}-gitref>|${{ env.BRANCH }}|'
+          ${{ env.COMPONENT }}.conf
+
+      - name: Set container tag in config file
+        run: >
+          sed -i 's|<${{ env.COMPONENT }}-tag>|${{ env.TAG }}|'
+          ${{ env.COMPONENT }}.conf
+
+      - name: Build container(s)
+        run: kolla-build --config-file ${{ env.COMPONENT }}.conf
 
       - name: Tag the magnum-conductor image
         run: >
