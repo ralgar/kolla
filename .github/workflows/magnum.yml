@@ -50,11 +50,20 @@ jobs:
       - name: Build container(s)
         run: kolla-build --config-file ${{ env.COMPONENT }}.conf
 
+      - name: Tag the magnum-api image
+        run: >
+          docker tag
+          kolla/magnum-api:${{ env.TAG }}
+          ghcr.io/${{ github.repository }}/magnum-api:${{ env.TAG }}
+
       - name: Tag the magnum-conductor image
         run: >
           docker tag
           kolla/magnum-conductor:${{ env.TAG }}
           ghcr.io/${{ github.repository }}/magnum-conductor:${{ env.TAG }}
+
+      - name: Push magnum-api image
+        run: docker push ghcr.io/${{ github.repository }}/magnum-api:${{ env.TAG }}
 
       - name: Push magnum-conductor image
         run: docker push ghcr.io/${{ github.repository }}/magnum-conductor:${{ env.TAG }}
