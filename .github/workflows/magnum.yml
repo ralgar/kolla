@@ -48,7 +48,10 @@ jobs:
           ${{ env.COMPONENT }}.conf
 
       - name: Build container(s)
-        run: kolla-build --config-file ${{ env.COMPONENT }}.conf
+        run: >
+          kolla-build
+          --config-file ${{ env.COMPONENT }}.conf
+          --template-override ${{ env.COMPONENT }}-override.j2
 
       - name: Tag the magnum-api image
         run: >
