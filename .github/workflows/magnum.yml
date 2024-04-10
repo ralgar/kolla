@@ -35,7 +35,7 @@ jobs:
         run: sudo apt install -y python3-pip
 
       - name: Install Kolla
-        run: pip install --no-input 'kolla==17.3.0'
+        run: pip install --no-input 'docker' 'kolla==17.3.0'
 
       - name: Set remote Git ref in config file
         run: >
