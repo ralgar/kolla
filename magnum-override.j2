@@ -3,5 +3,5 @@
 
 {% block magnum_base_footer %}
 RUN source /var/lib/kolla/venv/bin/activate && \
-  pip uninstall magnum-cluster-api
+  pip uninstall --no-input magnum-cluster-api
 {% endblock %}
