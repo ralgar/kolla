@@ -4,13 +4,12 @@
 
 This project is simply a CI pipeline and container namespace that leverages
  the [Kolla](https://docs.openstack.org/kolla/latest) build system, allowing
- me to easily build custom Kolla containers.
+ me to easily build custom Kolla containers for my personal OpenStack cloud.
 
 ## Building a container
 
-1. Go to **Actions >> Workflows >> Build <container-name> >> Run workflow**.
-
-1. Enter the remote branch to build from.
+Builds are automatic, and are triggered by modifying files in the relevant
+ component's subdirectory.
 
 ## Using a container
 

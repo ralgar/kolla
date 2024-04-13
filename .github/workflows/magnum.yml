@@ -4,16 +4,11 @@ name: Build Magnum
 on:
   push:
     paths:
+      - '.github/actions/setup-kolla/**'
       - 'magnum/**'
-  workflow_dispatch:
-    # inputs:
-    #   profile:
-    #     description: 'Profile to build'
-    #     required: true
 
 env:
   COMPONENT: "magnum"
-  # BRANCH: "${{ github.event.inputs.branch }}"
 
 jobs:
   build-and-push-image:
@@ -29,20 +24,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Ensure pip is installed
-        run: sudo apt install -y python3-pip
-
-      - name: Install Kolla
-        run: pip install --no-input 'docker' 'kolla==17.3.0'
-
-      - name: Set container tag in config file
-        run: >
-          sed -i 's|<registry-namespace>|${{ github.repository }}|'
-          kolla-build.conf
+      - name: Setup Kolla
+        uses: ./.github/actions/setup-kolla
 
       - name: Build container(s)
         run: >
           kolla-build
-          --config-file kolla-build.conf
+          --config-file ${{ env.COMPONENT }}/build.conf
           --template-override ${{ env.COMPONENT }}/override.j2
-          --profile ${{ env.COMPONENT }}

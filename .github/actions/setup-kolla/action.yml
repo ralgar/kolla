@@ -1,0 +1,20 @@
+---
+name: "Setup Kolla"
+description: "Installs and configures Kolla"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Ensure pip is installed
+      run: sudo apt install -y python3-pip
+      shell: bash
+
+    - name: Install Kolla
+      run: pip install --no-input 'docker' 'kolla==17.3.0'
+      shell: bash
+
+    - name: Set registry namespace in config file
+      run: >
+        sed -i 's|<registry-namespace>|${{ github.repository }}|'
+        kolla-build.conf
+      shell: bash
