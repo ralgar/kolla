@@ -2,17 +2,18 @@
 name: Build Magnum
 
 on:
+  push:
+    paths:
+      - 'magnum/**'
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Remote branch'
-        required: true
-        default: 'stable/2023.2'
+    # inputs:
+    #   profile:
+    #     description: 'Profile to build'
+    #     required: true
 
 env:
-  COMPONENT: magnum
-  REGISTRY: ghcr.io
-  BRANCH: "${{ github.event.inputs.branch }}"
+  COMPONENT: "magnum"
+  # BRANCH: "${{ github.event.inputs.branch }}"
 
 jobs:
   build-and-push-image:
@@ -21,13 +22,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set 'TAG' environment variable
-        run: echo "TAG=$(echo ${{ env.BRANCH }} | sed 's|/|-|')" >> $GITHUB_ENV
-
       - name: Log in to the container registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -37,36 +35,14 @@ jobs:
       - name: Install Kolla
         run: pip install --no-input 'docker' 'kolla==17.3.0'
 
-      - name: Set remote Git ref in config file
-        run: >
-          sed -i 's|<${{ env.COMPONENT }}-gitref>|${{ env.BRANCH }}|'
-          ${{ env.COMPONENT }}.conf
-
       - name: Set container tag in config file
         run: >
-          sed -i 's|<${{ env.COMPONENT }}-tag>|${{ env.TAG }}|'
-          ${{ env.COMPONENT }}.conf
+          sed -i 's|<registry-namespace>|${{ github.repository }}|'
+          kolla-build.conf
 
       - name: Build container(s)
         run: >
           kolla-build
-          --config-file ${{ env.COMPONENT }}.conf
-          --template-override ${{ env.COMPONENT }}-override.j2
-
-      - name: Tag the magnum-api image
-        run: >
-          docker tag
-          kolla/magnum-api:${{ env.TAG }}
-          ghcr.io/${{ github.repository }}/magnum-api:${{ env.TAG }}
-
-      - name: Tag the magnum-conductor image
-        run: >
-          docker tag
-          kolla/magnum-conductor:${{ env.TAG }}
-          ghcr.io/${{ github.repository }}/magnum-conductor:${{ env.TAG }}
-
-      - name: Push magnum-api image
-        run: docker push ghcr.io/${{ github.repository }}/magnum-api:${{ env.TAG }}
-
-      - name: Push magnum-conductor image
-        run: docker push ghcr.io/${{ github.repository }}/magnum-conductor:${{ env.TAG }}
+          --config-file kolla-build.conf
+          --template-override ${{ env.COMPONENT }}/override.j2
+          --profile ${{ env.COMPONENT }}
