@@ -1,10 +1,13 @@
 ---
-name: "Kolla Build"
+name: Kolla Build
 description: "Installs, configures, and runs Kolla Build."
 
 inputs:
   component:
-    description: "Name of the component to build"
+    description: "Name of the component to build."
+    required: true
+  ghcr_token:
+    description: "Token for accessing GitHub Container Registry."
     required: true
 
 runs:
@@ -29,10 +32,11 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ inputs.ghcr_token }}
 
     - name: Build and push containers
       run: >
         kolla-build
         --config-file ${{ inputs.component }}/build.conf
         --template-override ${{ inputs.component }}/override.j2
+      shell: bash

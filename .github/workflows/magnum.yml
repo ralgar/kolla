@@ -4,11 +4,11 @@ name: Build Magnum
 on:
   push:
     paths:
-      - '.github/actions/setup-kolla/**'
+      - '.github/actions/kolla-build/**'
       - 'magnum/**'
 
 env:
-  COMPONENT: "magnum"
+  COMPONENT: magnum
 
 jobs:
   kolla-build:
@@ -17,7 +17,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Kolla
+      - name: Kolla Build
         uses: ./.github/actions/kolla-build
         with:
           component: ${{ env.COMPONENT }}
+          ghcr_token: ${{ secrets.GITHUB_TOKEN }}
