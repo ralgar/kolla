@@ -2,6 +2,11 @@
 name: "Setup Kolla"
 description: "Installs and configures Kolla"
 
+inputs:
+  component:
+    description: "Name of the component to build"
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -16,5 +21,5 @@ runs:
     - name: Set registry namespace in config file
       run: >
         sed -i 's|<registry-namespace>|${{ github.repository }}|'
-        kolla-build.conf
+        ${{ inputs.component }}/build.conf
       shell: bash

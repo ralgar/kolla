@@ -26,6 +26,8 @@ jobs:
 
       - name: Setup Kolla
         uses: ./.github/actions/setup-kolla
+        with:
+          component: ${{ env.COMPONENT }}
 
       - name: Build container(s)
         run: >
