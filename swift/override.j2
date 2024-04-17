@@ -1,0 +1,5 @@
+{% extends parent_template %}
+
+{% block swift_base_footer %}
+RUN dnf install -y rsync && dnf clean all
+{% endblock %}

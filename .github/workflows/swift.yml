@@ -1,0 +1,24 @@
+---
+name: Build Swift
+
+on:
+  push:
+    paths:
+      - '.github/actions/kolla-build/**'
+      - 'swift/**'
+
+env:
+  COMPONENT: swift
+
+jobs:
+  kolla-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Kolla Build
+        uses: ./.github/actions/kolla-build
+        with:
+          component: ${{ env.COMPONENT }}
+          ghcr_token: ${{ secrets.GITHUB_TOKEN }}
